@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { FaEnvelope, FaLock, FaUser } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 const Login = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [darkMode, setDarkMode] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [accountType, setAccountType] = useState("empresa");
 
   useEffect(() => {
     if (darkMode) {
@@ -16,6 +20,26 @@ const Login = () => {
       document.documentElement.classList.remove("dark");
     }
   }, [darkMode]);
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    if (accountType === "empresa") {
+      const storedEmpresas = JSON.parse(localStorage.getItem("empresas")) || [];
+      const empresa = storedEmpresas.find(
+        (e) => e.email === email && e.password === password
+      );
+
+      if (empresa) {
+        localStorage.setItem("empresaLogueada", JSON.stringify(empresa));
+        navigate(`/perfil-empresa/${empresa.id}`);
+      } else {
+        alert("Credenciales inválidas para empresa");
+      }
+    } else {
+      alert("Funcionalidad de login para inversionistas aún no implementada");
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
@@ -29,13 +53,15 @@ const Login = () => {
             {t("Selecciona tu tipo de cuenta e ingresa tus credenciales.")}
           </p>
 
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleLogin}>
             <div className="flex items-center gap-2 border rounded px-3 py-2">
               <FaEnvelope className="text-blue-600" />
               <input
                 type="email"
                 placeholder={t("Correo Electrónico")}
                 className="w-full bg-transparent outline-none"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
@@ -45,14 +71,20 @@ const Login = () => {
                 type="password"
                 placeholder={t("Contraseña")}
                 className="w-full bg-transparent outline-none"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
 
             <div className="flex items-center gap-2 border rounded px-3 py-2">
               <FaUser className="text-blue-600" />
-              <select className="w-full bg-transparent outline-none">
-                <option>{t("Soy Empresa")}</option>
-                <option>{t("Soy Inversionista")}</option>
+              <select
+                className="w-full bg-transparent outline-none"
+                value={accountType}
+                onChange={(e) => setAccountType(e.target.value)}
+              >
+                <option value="empresa">{t("Soy Empresa")}</option>
+                <option value="inversionista">{t("Soy Inversionista")}</option>
               </select>
             </div>
 

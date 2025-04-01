@@ -1,15 +1,24 @@
 // src/pages/RegistrarEmpresa.jsx
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion"; // eslint-disable-line no-unused-vars
+import { motion } from "framer-motion"; //eslint-disable-line no-unused-vars
 import { useTranslation } from "react-i18next";
 import { FaBuilding, FaEnvelope, FaLock, FaGlobe, FaPhone } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 const RegistrarEmpresa = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [formData, setFormData] = useState({
+    nombre: "",
+    email: "",
+    password: "",
+    web: "",
+    telefono: ""
+  });
 
   useEffect(() => {
     if (isDarkMode) {
@@ -18,6 +27,30 @@ const RegistrarEmpresa = () => {
       document.documentElement.classList.remove("dark");
     }
   }, [isDarkMode]);
+
+  const handleChange = (e) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const empresasGuardadas = JSON.parse(localStorage.getItem("empresas")) || [];
+
+    const nuevaEmpresa = {
+      id: Date.now(),
+      ...formData
+    };
+
+    const nuevasEmpresas = [...empresasGuardadas, nuevaEmpresa];
+    localStorage.setItem("empresas", JSON.stringify(nuevasEmpresas));
+    localStorage.setItem("empresaLogueada", JSON.stringify(nuevaEmpresa));
+
+    navigate(`/perfil-empresa/${nuevaEmpresa.id}`);
+  };
 
   return (
     <div className="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen">
@@ -38,13 +71,17 @@ const RegistrarEmpresa = () => {
         </p>
 
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleSubmit}>
             <div className="flex items-center border rounded px-3 py-2">
               <FaBuilding className="text-blue-500 mr-3" />
               <input
                 type="text"
+                name="nombre"
+                value={formData.nombre}
+                onChange={handleChange}
                 placeholder={t("Nombre de la Empresa")}
                 className="w-full bg-transparent focus:outline-none"
+                required
               />
             </div>
 
@@ -52,8 +89,12 @@ const RegistrarEmpresa = () => {
               <FaEnvelope className="text-blue-500 mr-3" />
               <input
                 type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
                 placeholder={t("Correo Electrónico")}
                 className="w-full bg-transparent focus:outline-none"
+                required
               />
             </div>
 
@@ -61,8 +102,12 @@ const RegistrarEmpresa = () => {
               <FaLock className="text-blue-500 mr-3" />
               <input
                 type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
                 placeholder={t("Contraseña")}
                 className="w-full bg-transparent focus:outline-none"
+                required
               />
             </div>
 
@@ -70,6 +115,9 @@ const RegistrarEmpresa = () => {
               <FaGlobe className="text-blue-500 mr-3" />
               <input
                 type="text"
+                name="web"
+                value={formData.web}
+                onChange={handleChange}
                 placeholder={t("Sitio Web de la Empresa")}
                 className="w-full bg-transparent focus:outline-none"
               />
@@ -79,6 +127,9 @@ const RegistrarEmpresa = () => {
               <FaPhone className="text-blue-500 mr-3" />
               <input
                 type="text"
+                name="telefono"
+                value={formData.telefono}
+                onChange={handleChange}
                 placeholder={t("Número de Teléfono")}
                 className="w-full bg-transparent focus:outline-none"
               />

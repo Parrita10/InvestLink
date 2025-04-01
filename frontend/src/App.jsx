@@ -8,6 +8,10 @@ import Contacto from "./pages/Contacto";
 import Login from "./pages/Login";
 import RegistrarInversionista from "./pages/RegistrarInversionista";
 import RegistrarEmpresa from "./pages/RegistrarEmpresa";
+import EmpresaDetalle from "./pages/EmpresaDetalle";
+import PlanBasico from "./pages/PlanBasico";
+import PlanAvanzado from "./pages/PlanAvanzado";
+import PerfilEmpresa from "./pages/PerfilEmpresa";
 
 function App() {
   return (
@@ -20,7 +24,11 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/registrarempresa" element={<RegistrarEmpresa />} />
       <Route path="/registrarInversionista" element={<RegistrarInversionista />} />
-
+      <Route path="/empresa/:id" element={<EmpresaDetalle />} />
+      <Route path="/plan/planbasico" element={<PlanBasico />} />
+      <Route path="/plan/planavanzado" element={<PlanAvanzado />} />
+      <Route path="/perfil-empresa/:id" element={<PerfilEmpresa />} />
+      
     </Routes>
   );
 }
