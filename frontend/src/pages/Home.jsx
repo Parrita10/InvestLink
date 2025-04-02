@@ -44,12 +44,12 @@ const Home = () => {
     const localCompanies = JSON.parse(localStorage.getItem("empresas")) || [];
     const formatted = localCompanies.map((e) => ({
       name: e.nombre,
-      category: e.categoria || "Empresa registrada",
+      category: e.categoria ? t(e.categoria) : t("Empresa registrada"),
       investors: "✨ Nueva empresa",
     }));
     const all = [...formatted, ...defaultCompanies];
     setCombinedCompanies(all);
-  }, []);
+  }, [t]);  
 
   useEffect(() => {
     if (combinedCompanies.length > 0) {
@@ -79,7 +79,8 @@ const Home = () => {
     if (slider && slider.current && slider.current.update) {
       slider.current.update();
     }
-  }, [empresasFiltradas]); 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filtro, combinedCompanies]);
 
   if (!mounted) return null;
 
@@ -108,7 +109,7 @@ const Home = () => {
             className="p-3 w-96 border rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button className="bg-blue-600 text-white px-4 py-3 rounded-r-md text-lg hover:bg-blue-700 transition">
-            🔍
+            {t("🔍")}
           </button>
         </div>
       </motion.section>
@@ -136,10 +137,10 @@ const Home = () => {
                   <h4 className="text-lg font-bold text-blue-700 dark:text-blue-300 truncate">
                     {company.name}
                   </h4>
-                  <p className="text-gray-600 dark:text-gray-300">{company.category}</p>
+                  <p className="text-gray-600 dark:text-gray-300">{t(company.category)}</p>
                   <p className="text-gray-500 dark:text-gray-400 whitespace-nowrap overflow-hidden text-ellipsis">
                     {typeof company.investors === "number"
-                      ? `👥 ${company.investors} inversionistas`
+                      ? `👥 ${company.investors} ${t("inversionistas")}`
                       : company.investors}
                   </p>
                 </motion.div>

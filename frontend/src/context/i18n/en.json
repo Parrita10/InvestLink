@@ -62,6 +62,15 @@
   "Iniciar Sesión": "Log In",
   "Selecciona tu tipo de cuenta e ingresa tus credenciales.": "Select your account type and enter your credentials.",
   "¿No tienes cuenta?": "Don't have an account?",
-  "Regístrate": "Sign Up"
+  "Regístrate": "Sign Up",
+
+  "Empresa registrada": "Registered Company",
+  "Inmobiliaria": "Real Estate",
+  "Salud": "Health",
+  "Educación": "Education",
+  "Transporte": "Transportation",
+  "Energía": "Energy",
   
+  "Empresas Destacadas": "Featured Companies",
+  "Nueva empresa": "New Company"
 }

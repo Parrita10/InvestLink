@@ -63,6 +63,16 @@
   "Iniciar Sesión": "Iniciar Sesión",
   "Selecciona tu tipo de cuenta e ingresa tus credenciales.": "Selecciona tu tipo de cuenta e ingresa tus credenciales.",
   "¿No tienes cuenta?": "¿No tienes cuenta?",
-  "Regístrate": "Regístrate"
+  "Regístrate": "Regístrate",
+
+  "Empresa registrada": "Empresa registrada",
+  "Inmobiliaria": "Inmobiliaria",
+  "Salud": "Salud",
+  "Educación": "Educación",
+  "Transporte": "Transporte",
+  "Energía": "Energía",
+
+  "Empresas Destacadas": "Empresas Destacadas",
+  "Nueva empresa": "Nueva Empresa"
 
 }
