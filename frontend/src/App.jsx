@@ -26,9 +26,12 @@ function App() {
       <Route path="/registrarInversionista" element={<RegistrarInversionista />} />
       <Route path="/empresa/:id" element={<EmpresaDetalle />} />
       <Route path="/plan/planbasico" element={<PlanBasico />} />
-      <Route path="/plan/planavanzado" element={<PlanAvanzado />} />
+      <Route path="/plan/planpremium" element={<PlanAvanzado />} />
       <Route path="/perfil-empresa/:id" element={<PerfilEmpresa />} />
+    
       
+
+
     </Routes>
   );
 }

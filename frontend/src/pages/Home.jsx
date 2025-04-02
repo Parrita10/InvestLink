@@ -1,15 +1,62 @@
-import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion"; // eslint-disable-line no-unused-vars
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion"; //eslint-disable-line no-unused-vars
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { FaFacebookF, FaTwitter, FaLinkedinIn } from "react-icons/fa";
-import Navbar from "../components/Navbar"; // Asegúrate de que la ruta sea correcta
+import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
+import { companies as defaultCompanies } from "../data/companies";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import { useKeenSlider } from "keen-slider/react";
+import "keen-slider/keen-slider.min.css";
 
 const Home = () => {
   const { t } = useTranslation();
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [combinedCompanies, setCombinedCompanies] = useState([]);
+  const [mounted, setMounted] = useState(false);
 
-  // Aplica clase al HTML para modo oscuro
+  // Slider (solo se inicializa cuando mounted = true)
+  const [sliderRef, slider] = useKeenSlider({
+    loop: true,
+    slides: {
+      perView: 3,
+      spacing: 16,
+    },
+    breakpoints: {
+      "(max-width: 768px)": {
+        slides: {
+          perView: 1,
+          spacing: 16,
+        },
+      },
+    },
+  });
+
+  useEffect(() => {
+    if (!slider) return;
+    const interval = setInterval(() => {
+      slider.current?.next();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [slider]);
+
+  useEffect(() => {
+    const localCompanies = JSON.parse(localStorage.getItem("empresas")) || [];
+    const formatted = localCompanies.map((e) => ({
+      name: e.nombre,
+      category: "Empresa registrada",
+      investors: "✨ Nueva empresa",
+    }));
+    setCombinedCompanies([...defaultCompanies, ...formatted]);
+  }, []);
+
+  // Activar "mounted" solo cuando las tarjetas estén listas
+  useEffect(() => {
+    if (combinedCompanies.length > 0) {
+      setMounted(true);
+    }
+  }, [combinedCompanies]);
+
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add("dark");
@@ -19,10 +66,10 @@ const Home = () => {
   }, [isDarkMode]);
 
   return (
-    <div className="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen">
+    <div className="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen">
       <Navbar darkMode={isDarkMode} toggleDarkMode={() => setIsDarkMode(!isDarkMode)} />
 
-      {/* Hero Section */}
+      {/* Hero */}
       <motion.section
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -48,28 +95,55 @@ const Home = () => {
       </motion.section>
 
       {/* Empresas Destacadas */}
-      <section className="p-10">
-        <h3 className="text-2xl font-bold text-blue-700 dark:text-blue-300">{t("Empresas Destacadas")}</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
-          {[
-            { name: "Inmobiliaria Expansión", category: "Bienes Raíces", investors: "🏢 120 inversionistas" },
-            { name: "AgroGan S.A.", category: "Ganadería", investors: "🌾 95 inversionistas" },
-            { name: "TechFuture", category: "Tecnología", investors: "💻 150 inversionistas" }
-          ].map((company, index) => (
-            <motion.div
-              key={index}
-              whileHover={{ scale: 1.05 }}
-              className="bg-white dark:bg-gray-800 p-6 rounded-md shadow-lg hover:shadow-xl transition cursor-pointer"
+      <section className="relative p-10">
+        <h3 className="text-2xl font-bold text-blue-700 dark:text-blue-300 mb-6">
+          {t("Empresas Destacadas")}
+        </h3>
+
+        {mounted && (
+          <div className="relative group">
+            {/* Botón Izquierdo */}
+            <button
+              onClick={() => slider.current?.prev()}
+              className="absolute top-1/2 -left-6 transform -translate-y-1/2 bg-blue-600 text-white rounded-full p-2 z-10 opacity-0 group-hover:opacity-100 transition hover:bg-blue-700"
             >
-              <h4 className="text-lg font-bold text-blue-700 dark:text-blue-300">{company.name}</h4>
-              <p className="text-gray-600 dark:text-gray-300">{company.category}</p>
-              <p className="text-gray-500">{company.investors}</p>
-            </motion.div>
-          ))}
-        </div>
+              <FaAngleLeft size={20} />
+            </button>
+
+            {/* Slider */}
+            <div ref={sliderRef} className="keen-slider">
+              {combinedCompanies.map((company, index) => (
+                <div key={index} className="keen-slider__slide">
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    className="bg-white dark:bg-gray-800 p-6 rounded-md shadow-md h-full transition min-h-[150px]"
+                  >
+                    <h4 className="text-lg font-bold text-blue-700 dark:text-blue-300 truncate">
+                      {company.name}
+                    </h4>
+                    <p className="text-gray-600 dark:text-gray-300">{company.category}</p>
+                    <p className="text-gray-500 dark:text-gray-400 whitespace-nowrap overflow-hidden text-ellipsis">
+                      {typeof company.investors === "number"
+                        ? `👥 ${company.investors} inversionistas`
+                        : company.investors}
+                    </p>
+                  </motion.div>
+                </div>
+              ))}
+            </div>
+
+            {/* Botón Derecho */}
+            <button
+              onClick={() => slider.current?.next()}
+              className="absolute top-1/2 -right-6 transform -translate-y-1/2 bg-blue-600 text-white rounded-full p-2 z-10 opacity-0 group-hover:opacity-100 transition hover:bg-blue-700"
+            >
+              <FaAngleRight size={20} />
+            </button>
+          </div>
+        )}
       </section>
 
-      {/* Call to Action */}
+      {/* CTA */}
       <section className="bg-blue-100 dark:bg-blue-950 p-10 text-center rounded-md mx-10 mb-6">
         <h3 className="text-2xl font-bold text-blue-700 dark:text-blue-300">
           {t("Empieza a Invertir Hoy")}
@@ -86,7 +160,7 @@ const Home = () => {
               {t("Soy Empresa")}
             </motion.button>
           </Link>
-          <Link to="/registrarInversionista">
+          <Link to="/register">
             <motion.button
               whileTap={{ scale: 0.95 }}
               className="border border-blue-600 text-blue-600 px-6 py-2 rounded-md font-semibold hover:bg-blue-100 transition"
@@ -97,15 +171,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-gray-300 text-center py-6 mt-10">
-        <p>© {new Date().getFullYear()} InvestLink. Todos los derechos reservados.</p>
-        <div className="flex justify-center gap-6 mt-3 text-lg">
-          <a href="#" className="hover:text-blue-400 transition"><FaFacebookF /></a>
-          <a href="#" className="hover:text-blue-400 transition"><FaTwitter /></a>
-          <a href="#" className="hover:text-blue-400 transition"><FaLinkedinIn /></a>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
