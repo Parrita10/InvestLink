@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion"; //eslint-disable-line no-unused-vars
 import { useTranslation } from "react-i18next";
-import { FaBuilding, FaEnvelope, FaLock, FaGlobe, FaPhone } from "react-icons/fa";
+import { FaBuilding, FaEnvelope, FaLock, FaGlobe, FaPhone, FaTags } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -17,8 +17,32 @@ const RegistrarEmpresa = () => {
     email: "",
     password: "",
     web: "",
-    telefono: ""
+    telefono: "",
+    categoria: "",
   });
+
+  const categorias = [
+    "Tecnología",
+    "Inmobiliaria / Bienes Raíces",
+    "Ganadería",
+    "Agricultura",
+    "Energías Renovables",
+    "Salud y Bienestar",
+    "Educación",
+    "Transporte y Logística",
+    "Finanzas y Seguros",
+    "Turismo y Hospitalidad",
+    "Comercio Electrónico",
+    "Alimentos y Bebidas",
+    "Moda y Belleza",
+    "Construcción e Infraestructura",
+    "Entretenimiento y Medios",
+    "Inteligencia Artificial / Big Data",
+    "Ciberseguridad",
+    "Servicios Profesionales",
+    "Minería",
+    "Otros",
+  ];
 
   useEffect(() => {
     if (isDarkMode) {
@@ -133,6 +157,23 @@ const RegistrarEmpresa = () => {
                 placeholder={t("Número de Teléfono")}
                 className="w-full bg-transparent focus:outline-none"
               />
+            </div>
+
+            {/* Categoría de la empresa */}
+            <div className="flex items-center border rounded px-3 py-2">
+              <FaTags className="text-blue-500 mr-3" />
+              <select
+                name="categoria"
+                value={formData.categoria}
+                onChange={handleChange}
+                className="w-full bg-transparent focus:outline-none"
+                required
+              >
+                <option value="">{t("Seleccione una categoría...")}</option>
+                {categorias.map((cat, i) => (
+                  <option key={i} value={cat}>{cat}</option>
+                ))}
+              </select>
             </div>
 
             <button

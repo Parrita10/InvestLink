@@ -23,10 +23,10 @@ const RegistrarInversionista = () => {
   }, [isDarkMode]);
 
   return (
-    <div className="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white min-h-screen">
+    <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
       <Navbar darkMode={isDarkMode} toggleDarkMode={() => setIsDarkMode(!isDarkMode)} />
 
-      <div className="flex flex-col items-center justify-center py-10 px-4">
+      <main className="flex-grow flex flex-col items-center justify-center py-10 px-4">
         <h1 className="text-3xl font-bold text-blue-600 mb-4">InvestLink</h1>
         <h2 className="text-2xl font-bold mb-2">
           {t("Regístrate en InvestLink")}
@@ -82,7 +82,7 @@ const RegistrarInversionista = () => {
             </Link>
           </p>
         </div>
-      </div>
+      </main>
 
       <Footer />
     </div>
