@@ -12,6 +12,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [accountType, setAccountType] = useState("empresa");
+  const [loginError, setLoginError] = useState("");
 
   useEffect(() => {
     if (darkMode) {
@@ -34,10 +35,26 @@ const Login = () => {
         localStorage.setItem("empresaLogueada", JSON.stringify(empresa));
         navigate(`/perfil-empresa/${empresa.id}`);
       } else {
-        alert("Credenciales inválidas para empresa");
+        setLoginError("Credenciales inválidas para empresa");
       }
-    } else {
-      alert("Funcionalidad de login para inversionistas aún no implementada");
+    } else if (accountType === "inversionista") {
+      const storedInversionistas = JSON.parse(localStorage.getItem("usuarios")) || [];
+      console.log("Inversionistas guardados:", storedInversionistas);
+      const inversionista = storedInversionistas.find(
+        (inv) =>
+          inv.email?.trim().toLowerCase() === email.trim().toLowerCase() &&
+          inv.password === password &&
+          inv.rol === "inversionista"
+      );
+
+      if (inversionista) {
+        localStorage.setItem("inversionistaLogueado", JSON.stringify(inversionista));
+        navigate(`/perfil-inversionista/${inversionista.id}`);
+      } else {
+        console.log("Email ingresado:", email.trim().toLowerCase());
+        console.log("Usuarios almacenados:", storedInversionistas);
+        setLoginError("Credenciales inválidas para inversionista");
+      }
     }
   };
 
@@ -52,6 +69,17 @@ const Login = () => {
           <p className="text-center text-gray-600 dark:text-gray-300 mb-6">
             {t("Selecciona tu tipo de cuenta e ingresa tus credenciales.")}
           </p>
+          {loginError && (
+            <div className="text-red-600 text-center font-medium mb-4">
+              {loginError}
+            </div>
+          )}
+
+          <div className="text-center mb-4">
+            <p className="text-lg font-semibold text-blue-700">
+              {accountType === "empresa" ? "Ingreso para Empresas" : "Ingreso para Inversionistas"}
+            </p>
+          </div>
 
           <form className="space-y-4" onSubmit={handleLogin}>
             <div className="flex items-center gap-2 border rounded px-3 py-2">
@@ -98,7 +126,10 @@ const Login = () => {
 
           <p className="mt-4 text-center text-sm text-gray-700 dark:text-gray-300">
             {t("¿No tienes cuenta?")}&nbsp;
-            <Link to="/register" className="text-blue-600 font-semibold hover:underline">
+            <Link
+              to={accountType === "empresa" ? "/registrarempresa" : "/registrarinversionista"}
+              className="text-blue-600 font-semibold hover:underline"
+            >
               {t("Regístrate")}
             </Link>
           </p>

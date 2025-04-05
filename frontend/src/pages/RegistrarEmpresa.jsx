@@ -1,8 +1,7 @@
-// src/pages/RegistrarEmpresa.jsx
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion"; //eslint-disable-line no-unused-vars
 import { useTranslation } from "react-i18next";
-import { FaBuilding, FaEnvelope, FaLock, FaGlobe, FaPhone, FaTags } from "react-icons/fa";
+import { FaBuilding, FaEnvelope, FaLock, FaGlobe, FaPhone, FaTags, FaCalendarAlt, FaInfoCircle } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -19,6 +18,9 @@ const RegistrarEmpresa = () => {
     web: "",
     telefono: "",
     categoria: "",
+    ubicacion: "",
+    descripcionGeneral: "",
+    fechaVinculacion: ""
   });
 
   const categorias = [
@@ -66,7 +68,8 @@ const RegistrarEmpresa = () => {
 
     const nuevaEmpresa = {
       id: Date.now(),
-      ...formData
+      ...formData,
+      fechaVinculacion: new Date().toISOString().split("T")[0]
     };
 
     const nuevasEmpresas = [...empresasGuardadas, nuevaEmpresa];
@@ -174,6 +177,42 @@ const RegistrarEmpresa = () => {
                   <option key={i} value={cat}>{cat}</option>
                 ))}
               </select>
+            </div>
+
+            <div className="flex items-center border rounded px-3 py-2">
+              <FaGlobe className="text-blue-500 mr-3" />
+              <input
+                type="text"
+                name="ubicacion"
+                value={formData.ubicacion}
+                onChange={handleChange}
+                placeholder={t("Ubicación de la Empresa")}
+                className="w-full bg-transparent focus:outline-none"
+                required
+              />
+            </div>
+
+            <div className="flex items-center border rounded px-3 py-2">
+              <FaCalendarAlt className="text-blue-500 mr-3" />
+              <input
+                type="text"
+                name="fechaVinculacion"
+                value={new Date().toISOString().split("T")[0]}
+                readOnly
+                className="w-full bg-transparent focus:outline-none"
+              />
+            </div>
+
+            <div className="flex items-center border rounded px-3 py-2">
+              <FaInfoCircle className="text-blue-500 mr-3" />
+              <textarea
+                name="descripcionGeneral"
+                value={formData.descripcionGeneral}
+                onChange={handleChange}
+                placeholder={t("Descripción General de la Empresa")}
+                className="w-full bg-transparent focus:outline-none"
+                rows={3}
+              />
             </div>
 
             <button

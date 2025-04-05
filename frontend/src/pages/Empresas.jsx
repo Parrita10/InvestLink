@@ -70,11 +70,18 @@ const Empresas = () => {
   const todasEmpresas = [...empresasBase, ...empresasRegistradas];
 
   return (
-    <div className="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen">
+    <div className="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col justify-between">
       <Navbar
         darkMode={isDarkMode}
         toggleDarkMode={() => setIsDarkMode(!isDarkMode)}
       />
+
+      {/* Banner de acceso para empresas */}
+      <div className="bg-blue-50 text-blue-700 dark:bg-gray-700 dark:text-white py-2 px-4 text-sm text-center shadow-sm">
+        ¿Eres una empresa?{" "}
+        <Link to="/login" className="underline hover:text-blue-900 dark:hover:text-blue-300">Inicia sesión</Link> o{" "}
+        <Link to="/registrarempresa" className="underline hover:text-blue-900 dark:hover:text-blue-300">regístrate</Link>.
+      </div>
 
       {/* Hero */}
       <motion.section
@@ -143,7 +150,8 @@ const Empresas = () => {
       </motion.section>
 
       {/* Listado de Empresas */}
-      <section className="px-10 pb-10">
+      <>
+      <section className="px-10 pb-10 flex-grow">
         <h3 className="text-2xl font-bold mb-6">{t("Empresas Registradas")}</h3>
         <div className="grid md:grid-cols-2 gap-6">
           {todasEmpresas
@@ -186,9 +194,10 @@ const Empresas = () => {
             ))}
         </div>
       </section>
+      </>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-gray-300 text-center py-6 mt-10">
+      <footer className="bg-gray-900 text-gray-300 text-center py-6 mt-auto">
         <p>© {new Date().getFullYear()} InvestLink. Todos los derechos reservados.</p>
         <div className="flex justify-center gap-6 mt-3 text-lg">
           <a href="#" className="hover:text-blue-400 transition">

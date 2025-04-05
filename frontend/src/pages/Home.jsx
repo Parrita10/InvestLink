@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { motion } from "framer-motion"; //eslint-disable-line no-unused-vars
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import { companies as defaultCompanies } from "../data/companies";
@@ -11,6 +11,7 @@ import "keen-slider/keen-slider.min.css";
 
 const Home = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [combinedCompanies, setCombinedCompanies] = useState([]);
   const [filtro, setFiltro] = useState("");
@@ -43,9 +44,11 @@ const Home = () => {
   useEffect(() => {
     const localCompanies = JSON.parse(localStorage.getItem("empresas")) || [];
     const formatted = localCompanies.map((e) => ({
+      id: e.id,
       name: e.nombre,
       category: e.categoria ? t(e.categoria) : t("Empresa registrada"),
       investors: "✨ Nueva empresa",
+      esRegistrada: true,
     }));
     const all = [...formatted, ...defaultCompanies];
     setCombinedCompanies(all);
@@ -129,7 +132,15 @@ const Home = () => {
 
           <div ref={sliderRef} className="keen-slider overflow-hidden">
             {empresasFiltradas.map((company, index) => (
-              <div key={index} className="keen-slider__slide">
+              <div
+                key={index}
+                className="keen-slider__slide cursor-pointer"
+                onClick={() =>
+                  company.esRegistrada
+                    ? navigate(`/perfil-empresa/${company.id}`)
+                    : navigate(`/empresa/${company.id}`)
+                }
+              >
                 <motion.div
                   whileHover={{ scale: 1.02 }}
                   className="bg-white dark:bg-gray-800 p-6 rounded-md shadow-md h-full transition min-h-[150px]"

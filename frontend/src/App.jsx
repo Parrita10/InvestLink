@@ -12,6 +12,7 @@ import EmpresaDetalle from "./pages/EmpresaDetalle";
 import PlanBasico from "./pages/PlanBasico";
 import PlanAvanzado from "./pages/PlanAvanzado";
 import PerfilEmpresa from "./pages/PerfilEmpresa";
+import PerfilInversionista from "./pages/PerfilInversionista";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
       <Route path="/plan/planbasico" element={<PlanBasico />} />
       <Route path="/plan/planpremium" element={<PlanAvanzado />} />
       <Route path="/perfil-empresa/:id" element={<PerfilEmpresa />} />
+      <Route path="/perfil-inversionista/:id" element={<PerfilInversionista />} />
     
       
 

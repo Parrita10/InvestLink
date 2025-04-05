@@ -6,6 +6,9 @@ import { FaSun, FaMoon } from "react-icons/fa";
 
 const Navbar = ({ darkMode, toggleDarkMode }) => {
   const { t, i18n } = useTranslation();
+  const usuarioInversionista = JSON.parse(localStorage.getItem("inversionistaLogueado"));
+  const usuarioEmpresa = JSON.parse(localStorage.getItem("empresaLogueada"));
+  const usuarioActivo = usuarioInversionista || usuarioEmpresa;
 
   return (
     <nav className="bg-white dark:bg-gray-900 shadow-md p-4 flex justify-between items-center px-10">
@@ -38,6 +41,23 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
 
       {/* Modo oscuro e idioma */}
       <div className="flex items-center gap-3">
+        {usuarioActivo && (
+          <div className="flex items-center gap-4 mr-4">
+            <span className="text-sm font-semibold text-green-600 dark:text-green-400">
+              {t("Hola")}, {usuarioActivo.nombre} ({usuarioInversionista ? "Inversionista" : "Empresa"})
+            </span>
+            <button
+              onClick={() => {
+                localStorage.removeItem("inversionistaLogueado");
+                localStorage.removeItem("empresaLogueada");
+                window.location.href = "/";
+              }}
+              className="text-sm text-white bg-red-600 px-3 py-1 rounded hover:bg-red-700 transition"
+            >
+              {t("Cerrar sesión")}
+            </button>
+          </div>
+        )}
         <button
           onClick={toggleDarkMode}
           className="text-xl text-gray-700 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition"

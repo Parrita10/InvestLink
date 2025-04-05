@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   FaUser,
   FaEnvelope,
   FaLock,
-  FaBuilding
+  FaBuilding,
+  FaPhone
 } from "react-icons/fa";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -13,6 +14,15 @@ import Footer from "../components/Footer";
 const RegistrarInversionista = () => {
   const { t } = useTranslation();
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [registroExitoso, setRegistroExitoso] = useState(false);
+  const [formData, setFormData] = useState({
+    nombre: "",
+    email: "",
+    password: "",
+    celular: "",
+    rol: "inversionista"
+  });
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isDarkMode) {
@@ -29,8 +39,13 @@ const RegistrarInversionista = () => {
       <main className="flex-grow flex flex-col items-center justify-center py-10 px-4">
         <h1 className="text-3xl font-bold text-blue-600 mb-4">InvestLink</h1>
         <h2 className="text-2xl font-bold mb-2">
-          {t("Regístrate en InvestLink")}
+          {t("Registro como Inversionista")}
         </h2>
+        <p className="text-sm font-medium text-blue-600 mb-2">🧾 Registro de Inversionista</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+          {t("Este formulario es exclusivo para personas que desean invertir en proyectos.")}
+        </p>
+
         <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-md text-center">
           {t("Completa el formulario para comenzar a invertir o registrar tu empresa.")}
         </p>
@@ -41,6 +56,8 @@ const RegistrarInversionista = () => {
             <input
               type="text"
               placeholder={t("Nombre Completo")}
+              value={formData.nombre}
+              onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
               className="w-full p-2 bg-transparent focus:outline-none"
             />
           </div>
@@ -50,6 +67,8 @@ const RegistrarInversionista = () => {
             <input
               type="email"
               placeholder={t("Correo Electrónico")}
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               className="w-full p-2 bg-transparent focus:outline-none"
             />
           </div>
@@ -59,19 +78,48 @@ const RegistrarInversionista = () => {
             <input
               type="password"
               placeholder={t("Contraseña")}
+              value={formData.password}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               className="w-full p-2 bg-transparent focus:outline-none"
             />
           </div>
 
-          <div className="flex items-center border rounded px-3 mb-6">
-            <FaBuilding className="text-gray-400 mr-2" />
-            <select className="w-full p-2 bg-transparent focus:outline-none">
-              <option>{t("Soy Inversionista")}</option>
-              <option>{t("Soy Empresa")}</option>
-            </select>
+          <div className="flex items-center border rounded px-3 mb-4">
+            <FaPhone className="text-gray-400 mr-2" />
+            <input
+              type="tel"
+              placeholder={t("Celular (opcional)")}
+              value={formData.celular}
+              onChange={(e) => setFormData({ ...formData, celular: e.target.value })}
+              className="w-full p-2 bg-transparent focus:outline-none"
+            />
           </div>
 
-          <button className="bg-blue-600 text-white w-full py-2 rounded font-semibold hover:bg-blue-700 transition">
+          <button
+            className="bg-blue-600 text-white w-full py-2 rounded font-semibold hover:bg-blue-700 transition"
+            onClick={() => {
+              const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+              const existe = usuarios.some(u => u.email === formData.email);
+              if (existe) {
+                alert("Este correo ya está registrado como inversionista.");
+                return;
+              }
+              const id = Date.now();
+              const nuevoUsuario = {
+                id,
+                ...formData,
+                rol: "inversionista",
+                fechaRegistro: new Date().toISOString()
+              };
+              usuarios.push(nuevoUsuario);
+              localStorage.setItem("usuarios", JSON.stringify(usuarios));
+              setRegistroExitoso(true);
+              setFormData({ nombre: "", email: "", password: "", celular: "", rol: "inversionista" });
+              setTimeout(() => {
+                navigate(`/perfil-inversionista/${id}`, { replace: true, state: { desdeRegistro: true } });
+              }, 2000);
+            }}
+          >
             {t("Registrarse")}
           </button>
 
@@ -82,6 +130,12 @@ const RegistrarInversionista = () => {
             </Link>
           </p>
         </div>
+
+        {registroExitoso && (
+          <div className="text-green-600 text-center font-medium mb-4">
+            ✅ Registro exitoso como inversionista.
+          </div>
+        )}
       </main>
 
       <Footer />
